@@ -19,7 +19,7 @@ This program uses a couple of external libraries.  These must be installed in yo
 You will also need to [install the ESP8266 board](https://arduino-esp8266.readthedocs.io/en/latest/installing.html) to get all the needed WiFi and network libraries.
 
 ## The Code
-Modify the `binary_clock.ino` file in this repo to set your WiFi SSID and password.  Then you will need to modify your timezone information so that the offset is correct.  By default, it will use the Eastern Timezone configured for DST.
+Copy the `credentials.h.example` file to `credentials.h` in this repo to set your WiFi SSID and password.  Then you will need to modify your timezone information so that the offset is correct.  By default, it will use the Eastern Timezone configured for DST.
 
 ## The Hardware
 The included wiring diagram makes this seem more complicated than it is and is only there if you want to wire it up yourself using individual LEDs instead of a pre-wired string.  Using a pre-wired string, simply cut off 20 LEDs and put them in the order in the diagram below with the first (LED0) being in the bottom right and stacking from bottom to top, right to left in order.  Then wire the VCC to the 3v3 pin, GND to the GND pin and the DIN to D4 on the ESP8266.

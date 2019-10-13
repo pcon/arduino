@@ -1,51 +1,50 @@
-#include <FastLED.h>
 #include <ESP8266WiFi.h>
-#include <WiFiUdp.h>
+#include <FastLED.h>
 #include <TimeLib.h>
 #include <Timezone.h>
+#include <WiFiUdp.h>
+
+#include "credentials.h"
+#include "globals.h"
 
 static const char ntpServerName[] = "us.pool.ntp.org";
-const char *ssid = "SSID_GOES_HERE";
-const char *password = "PASSWORD_GOES_HERE";
+const char *ssid = WIFI_SSID;
+const char *password = WIFI_PASS;
 
 const int timeZone = 0;
 unsigned int localPort = 8888;
+time_t prevDisplay = 0;
 
 TimeChangeRule *tcr;
-TimeChangeRule usEDT = {"EDT", Second, Sun, Mar, 2, -240};  //UTC - 4 hours
-TimeChangeRule usEST = {"EST", First, Sun, Nov, 2, -300};   //UTC - 5 hours
+TimeChangeRule usEDT = {"EDT", Second, Sun, Mar, 2, -240};  // UTC - 4 hours
+TimeChangeRule usEST = {"EST", First, Sun, Nov, 2, -300};   // UTC - 5 hours
 Timezone usEastern(usEDT, usEST);
-
-#define NUM_LEDS 20
-#define DATA_PIN 4
-
-#define COLOR CRGB::Blue
-#define NO_COLOR CRGB::Black
 
 CRGB leds[NUM_LEDS];
 int timeval[NUM_LEDS];
-int SEC_ONE_OFFSET = 0;
-int SEC_TEN_OFFSET = 4;
-int MIN_ONE_OFFSET = 7;
-int MIN_TEN_OFFSET = 11;
-int HOUR_ONE_OFFSET = 14;
-int HOUR_TEN_OFFSET = 18;
 
 WiFiUDP WiFiUDP;
+const int NTP_PACKET_SIZE = 48;
+byte packetBuffer[NTP_PACKET_SIZE];
 
 time_t getNtpTime();
-void updateDisplay(time_t t);
 void sendNTPpacket(IPAddress &address);
+void updateDisplay(time_t t);
 
 void setup() {
-  FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
-  FastLED.setBrightness(50);
-  
+  Serial.begin(9600);
+  while (!Serial) {
+    ;
+  }
+
+  FastLED.addLeds<NEOPIXEL, LED_PIN>(leds, NUM_LEDS);
+  FastLED.setBrightness(DEFAULT_BRIGHTNESS);
+
   WiFi.begin(ssid, password);
 
   int i = 0;
   CRGB::HTMLColorCode color = CRGB::Red;
-  
+
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
 
@@ -58,13 +57,11 @@ void setup() {
       color = (color == CRGB::Red) ? CRGB::Blue : CRGB::Red;
     }
   }
-  
+
   WiFiUDP.begin(localPort);
   setSyncProvider(getNtpTime);
   setSyncInterval(300);
 }
-
-time_t prevDisplay = 0;
 
 void loop() {
   if (timeStatus() != timeNotSet) {
@@ -77,7 +74,7 @@ void loop() {
 
 void updateLEDs(int offset, int number, int bits) {
   for (byte i = 0; i < bits; i++) {
-    leds[offset + i] = bitRead(number, i) ? COLOR : NO_COLOR;
+    leds[offset + i] = bitRead(number, i) ? getColor() : NO_COLOR;
   }
 }
 
@@ -91,13 +88,11 @@ void updateDisplay(time_t t) {
   FastLED.show();
 }
 
-const int NTP_PACKET_SIZE = 48;
-byte packetBuffer[NTP_PACKET_SIZE];
-
 time_t getNtpTime() {
   IPAddress ntpServerIP;
 
-  while (WiFiUDP.parsePacket() > 0);
+  while (WiFiUDP.parsePacket() > 0)
+    ;
 
   WiFi.hostByName(ntpServerName, ntpServerIP);
   sendNTPpacket(ntpServerIP);
@@ -108,7 +103,7 @@ time_t getNtpTime() {
     if (size >= NTP_PACKET_SIZE) {
       WiFiUDP.read(packetBuffer, NTP_PACKET_SIZE);
       unsigned long secsSince1900;
-      secsSince1900 =  (unsigned long)packetBuffer[40] << 24;
+      secsSince1900 = (unsigned long)packetBuffer[40] << 24;
       secsSince1900 |= (unsigned long)packetBuffer[41] << 16;
       secsSince1900 |= (unsigned long)packetBuffer[42] << 8;
       secsSince1900 |= (unsigned long)packetBuffer[43];
