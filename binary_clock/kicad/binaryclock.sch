@@ -34,6 +34,8 @@ LIBS:valves
 LIBS:microchip_dspic33dsc
 LIBS:ESP8266
 LIBS:ws2812b
+LIBS:wemos_mini
+LIBS:binaryclock-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -41,24 +43,13 @@ encoding utf-8
 Sheet 1 1
 Title "Binary Clock"
 Date "2019-08-05"
-Rev "1.0"
+Rev "1.1"
 Comp ""
 Comment1 ""
 Comment2 "gnu.org/licenses/gpl-3.0.en.html"
 Comment3 "License: GPLv3"
 Comment4 "Author: Patrick Connelly"
 $EndDescr
-$Comp
-L NodeMCU1.0(ESP-12E) U0
-U 1 1 5D4479AA
-P 10200 4300
-F 0 "U0" H 10200 5150 60  0000 C CNN
-F 1 "NodeMCU1.0(ESP-12E)" H 10200 3450 60  0000 C CNN
-F 2 "" H 9600 3450 60  0000 C CNN
-F 3 "" H 9600 3450 60  0000 C CNN
-	1    10200 4300
-	-1   0    0    1   
-$EndComp
 $Comp
 L WS2812B LED0
 U 1 1 5D447B05
@@ -190,7 +181,7 @@ Wire Wire Line
 Wire Wire Line
 	8900 4500 8600 4500
 Wire Wire Line
-	9400 4600 8900 4600
+	9200 4600 8900 4600
 Wire Wire Line
 	8900 4600 8900 5500
 Wire Wire Line
@@ -198,9 +189,9 @@ Wire Wire Line
 Wire Wire Line
 	9400 3700 9100 3700
 Wire Wire Line
-	9100 3700 9100 5600
+	9100 5600 9100 3700
 Wire Wire Line
-	9100 5600 600  5600
+	600  5600 9100 5600
 Wire Wire Line
 	8200 5600 8200 5500
 Wire Wire Line
@@ -550,4 +541,19 @@ Connection ~ 7600 3300
 Connection ~ 3500 5600
 Wire Wire Line
 	1900 1900 2300 1900
+$Comp
+L WeMos_mini U1
+U 1 1 5DA36BC1
+P 9900 3950
+F 0 "U1" H 9900 4450 60  0000 C CNN
+F 1 "WeMos_mini" H 9900 3450 60  0000 C CNN
+F 2 "" H 10450 3250 60  0000 C CNN
+F 3 "" H 10450 3250 60  0000 C CNN
+	1    9900 3950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9200 4600 9200 3800
+Wire Wire Line
+	9200 3800 9400 3800
 $EndSCHEMATC

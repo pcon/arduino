@@ -1,4 +1,4 @@
-update=Mon 05 Aug 2019 11:50:48 AM EDT
+update=Sun 13 Oct 2019 06:21:29 PM EDT
 version=1
 last_client=kicad
 [pcbnew]
@@ -64,6 +64,7 @@ LibName32=valves
 LibName33=microchip_dspic33dsc
 LibName34=/home/pcon/Dropbox/Development/kicad/libraries/kicad-ESP8266/ESP8266
 LibName35=WS2812B.pretty/Schematic-Symbol/ws2812b
+LibName36=d1_mini_kicad/library/wemos_mini
 [schematic_editor]
 version=1
 PageLayoutDescrFile=
